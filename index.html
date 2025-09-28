@@ -27,7 +27,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             padding: 20px;
             position: relative;
-            overflow: hidden;
+            overflow-x: auto;
             display: none; /* Hidden by default */
         }
 
@@ -108,7 +108,7 @@
         
         .info-item {
             flex: 1;
-            min-width: 200px;
+            min-width: 220px;
         }
         
         .info-item label {
@@ -158,7 +158,7 @@
         
         .period-column {
             flex: 1;
-            min-width: 0;
+            min-width: 140px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -287,47 +287,43 @@
         }
         
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .container {
-                padding: 15px;
-            }
-
-            #login-form {
-                padding: 25px;
-                width: 90%;
-            }
-
-            .header h1 {
-                font-size: 22px;
-            }
-
             .header-info {
                 flex-direction: column;
+                gap: 20px;
             }
             
             .info-item {
                 min-width: 100%;
             }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
 
             .days-column {
-                width: 90px;
-            }
-            
-            .period-header {
-                font-size: 14px;
-            }
-            
-            .day-cell {
-                font-size: 14px;
-                height: 70px;
+                width: 80px;
             }
 
-            .period-cell {
-                height: 70px;
-                font-size: 14px;
+            .period-column {
+                min-width: 120px;
+            }
+            
+            .period-header, .day-cell {
+                font-size: 13px;
+            }
+
+            .day-cell, .period-cell {
+                height: 60px;
             }
 
             .controls {
@@ -339,12 +335,8 @@
             .settings-btn, .download-btn {
                 width: 100%;
                 margin-left: 0;
-                padding: 15px;
-            }
-
-            .modal-content {
-                width: 90%;
-                margin: 30% auto;
+                padding: 12px;
+                font-size: 16px;
             }
         }
     </style>
