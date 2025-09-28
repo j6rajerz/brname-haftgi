@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>برنامه هفتگی مدرسه خلیل آباد</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            background-image: radial-gradient(#c9e6ff 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            display: none; /* Hidden by default */
+        }
+
+        #login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #login-form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        #login-form img {
+            width: 100px;
+            margin-bottom: 15px;
+        }
+
+        #login-form h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+
+        #login-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: right;
+        }
+
+        #login-form button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #login-form button:hover {
+            background: linear-gradient(to right, #2980b9, #3498db);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px dashed #4a90e2;
+            position: relative;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .info-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .info-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .info-item input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .schedule-container {
+            display: flex;
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        
+        .days-column {
+            width: 120px;
+            flex-shrink: 0;
+        }
+        
+        .day-cell {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .periods-container {
+            display: flex;
+            flex: 1;
+            gap: 10px;
+        }
+        
+        .period-column {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .period-header {
+            height: 50px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #3498db, #2980b9);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .period-cell {
+            height: 80px;
+            width: 100%;
+            margin-bottom: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            padding: 8px;
+            background-color: white;
+            resize: none;
+            font-size: 16px;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .period-cell:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .download-btn {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .settings-btn {
+            background: linear-gradient(to right, #5a98db, #3478b9);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-left: 10px;
+        }
+
+        .settings-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .decoration {
+            position: absolute;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            color: #f1c40f;
+            font-size: 24px;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            #login-form {
+                padding: 25px;
+                width: 90%;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .header-info {
+                flex-direction: column;
+            }
+            
+            .info-item {
+                min-width: 100%;
+            }
+
+            .days-column {
+                width: 90px;
+            }
+            
+            .period-header {
+                font-size: 14px;
+            }
+            
+            .day-cell {
+                font-size: 14px;
+                height: 70px;
+            }
+
+            .period-cell {
+                height: 70px;
+                font-size: 14px;
+            }
+
+            .controls {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .settings-btn, .download-btn {
+                width: 100%;
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .modal-content {
+                width: 90%;
+                margin: 30% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="login-container">
+        <div id="login-form">
+            <img src="logo.png" alt="logo">
+            <h2>برنامه ساز JR</h2>
+            <input type="text" id="username" placeholder="نام کاربری" value="abbas" required>
+            <input type="password" id="password" placeholder="رمز عبور" required>
+            <button type="submit" id="login-button">ورود</button>
+        </div>
+    </div>
+
+    <div class="container" id="app-container">
+        <div class="header">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px;">
+                <img src="logo.png" alt="logo" style="width: 70px; height: 70px;">
+                <h1>برنامه هفتگی مدرسه خلیل آباد</h1>
+            </div>
+            <div class="header-info">
+                <div class="info-item">
+                    <label for="grade">پایه تحصیلی</label>
+                    <input type="text" id="grade" placeholder="مثال: پایه دهم" aria-label="پایه تحصیلی">
+                </div>
+                <div class="info-item">
+                    <label for="school">نام مدرسه</label>
+                    <input type="text" id="school" placeholder="نام مدرسه را وارد کنید" aria-label="نام مدرسه">
+                </div>
+                <div class="info-item">
+                    <label for="teacher">نام دبیر</label>
+                    <input type="text" id="teacher" placeholder="نام دبیر را وارد کنید" aria-label="نام دبیر">
+                </div>
+                <div class="info-item">
+                    <label for="semester">نیمسال تحصیلی</label>
+                    <input type="text" id="semester" placeholder="مثال: نیمسال اول" aria-label="نیمسال تحصیلی">
+                </div>
+            </div>
+        </div>
+        
+        <div class="schedule-container">
+            <div class="days-column">
+                <div style="height: 50px; margin-bottom: 10px;"></div>
+                <div class="day-cell" style="background-color: #e74c3c;">شنبه</div>
+                <div class="day-cell" style="background-color: #e67e22;">یکشنبه</div>
+                <div class="day-cell" style="background-color: #f1c40f;">دوشنبه</div>
+                <div class="day-cell" style="background-color: #2ecc71;">سه شنبه</div>
+                <div class="day-cell" style="background-color: #3498db;">چهارشنبه</div>
+                <div class="day-cell" style="background-color: #9b59b6;">پنجشنبه</div>
+            </div>
+            
+            <div class="periods-container">
+                <div class="period-column">
+                    <div class="period-header">زنگ اول</div>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                </div>
+                
+                <div class="period-column">
+                    <div class="period-header">زنگ دوم</div>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                </div>
+                
+                <div class="period-column">
+                    <div class="period-header">زنگ سوم</div>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                </div>
+                
+                <div class="period-column">
+                    <div class="period-header">زنگ چهارم</div>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                </div>
+                
+                <div class="period-column">
+                    <div class="period-header">زنگ پنجم</div>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                    <textarea class="period-cell"></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="settings-btn" id="settingsBtn">تنظیمات</button>
+            <button class="download-btn" id="downloadBtn">دانلود برنامه هفتگی</button>
+        </div>
+    </div>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>تنظیمات</h2>
+            <div id="settings-content">
+                <div>
+                    <h3>نمایش روزها</h3>
+                    <div id="days-settings">
+                        <label><input type="checkbox" value="0" checked> شنبه</label><br>
+                        <label><input type="checkbox" value="1" checked> یکشنبه</label><br>
+                        <label><input type="checkbox" value="2" checked> دوشنبه</label><br>
+                        <label><input type="checkbox" value="3" checked> سه شنبه</label><br>
+                        <label><input type="checkbox" value="4" checked> چهارشنبه</label><br>
+                        <label><input type="checkbox" value="5" checked> پنجشنبه</label><br>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <h3>تعداد زنگ ها</h3>
+                    <input type="number" id="periods-count" value="5" min="1" style="width: 60px;">
+                    <button id="update-periods">اعمال</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            var settingsButton = document.getElementById('settingsBtn');
+            var downloadButton = document.getElementById('downloadBtn');
+            
+            // Hide buttons
+            settingsButton.style.display = 'none';
+            downloadButton.style.display = 'none';
+
+            html2canvas(document.querySelector('.container')).then(function(canvas) {
+                // Show buttons again
+                settingsButton.style.display = 'inline-block';
+                downloadButton.style.display = 'inline-block';
+
+                // تبدیل canvas به تصویر
+                var image = canvas.toDataURL('image/png');
+                
+                // ایجاد لینک دانلود
+                var link = document.createElement('a');
+                link.download = 'برنامه-هفتگی.png';
+                link.href = image;
+                link.click();
+            });
+        });
+
+        var modal = document.getElementById("settingsModal");
+        var btn = document.getElementById("settingsBtn");
+        var span = document.getElementsByClassName("close")[0];
+
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Settings logic
+        const daysCheckboxes = document.querySelectorAll('#days-settings input[type="checkbox"]');
+        const dayCells = document.querySelectorAll('.days-column .day-cell');
+        const periodTextareas = document.querySelectorAll('.periods-container .period-column textarea');
+
+        daysCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const dayIndex = parseInt(this.value);
+                const display = this.checked ? 'flex' : 'none';
+                
+                dayCells[dayIndex].style.display = display;
+                
+                document.querySelectorAll('.periods-container .period-column').forEach(column => {
+                    column.children[dayIndex + 1].style.display = this.checked ? 'block' : 'none';
+                });
+            });
+        });
+
+        function toPersianOrdinal(num) {
+            const words = ["", "اول", "دوم", "سوم", "چهارم", "پنجم", "ششم", "هفتم", "هشتم", "نهم", "دهم", "یازدهم", "دوازدهم"];
+            return words[num] || num;
+        }
+
+        function updateAccessibilityLabels() {
+            const dayCells = document.querySelectorAll('.days-column .day-cell');
+            const dayNames = Array.from(dayCells).map(cell => cell.textContent);
+            
+            document.querySelectorAll('.periods-container .period-column').forEach((column, colIndex) => {
+                const periodName = column.querySelector('.period-header').textContent;
+                const cells = column.querySelectorAll('.period-cell');
+                cells.forEach((cell, rowIndex) => {
+                    if (dayNames[rowIndex]) {
+                        cell.setAttribute('aria-label', `${dayNames[rowIndex]}, ${periodName}`);
+                    }
+                });
+            });
+        }
+
+        document.getElementById('update-periods').addEventListener('click', function() {
+            const periodsContainer = document.querySelector('.periods-container');
+            const currentCount = periodsContainer.children.length;
+            const newCount = parseInt(document.getElementById('periods-count').value);
+
+            if (newCount > currentCount) {
+                for (let i = currentCount; i < newCount; i++) {
+                    const newColumn = document.createElement('div');
+                    newColumn.className = 'period-column';
+                    
+                    const header = document.createElement('div');
+                    header.className = 'period-header';
+                    header.textContent = `زنگ ${toPersianOrdinal(i + 1)}`;
+                    newColumn.appendChild(header);
+
+                    for (let j = 0; j < dayCells.length; j++) {
+                        const cell = document.createElement('textarea');
+                        cell.className = 'period-cell';
+                        newColumn.appendChild(cell);
+                    }
+                    periodsContainer.appendChild(newColumn);
+                }
+            } else if (newCount < currentCount) {
+                for (let i = currentCount; i > newCount; i--) {
+                    periodsContainer.removeChild(periodsContainer.lastChild);
+                }
+            }
+            updateAccessibilityLabels();
+        });
+        
+        // اضافه کردن تزئینات ستاره‌ای
+        function addStars() {
+            const container = document.querySelector('.container');
+            for (let i = 0; i < 10; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.innerHTML = '★';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                star.style.opacity = Math.random() * 0.5 + 0.3;
+                container.appendChild(star);
+            }
+        }
+        
+        // اجرای تابع بعد از لود صفحه
+        window.addEventListener('load', () => {
+            addStars();
+            updateAccessibilityLabels();
+        });
+
+        // Login logic
+        document.getElementById('login-button').addEventListener('click', function() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'abbas' && password === '1335') {
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('app-container').style.display = 'block';
+            } else {
+                alert('نام کاربری یا رمز عبور اشتباه است.');
+            }
+        });
+    </script>
+</body>
+</html>
